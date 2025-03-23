@@ -8,7 +8,7 @@ export default function TodoList() {
 
     //to clear default first empty task on page load every time
     useEffect(() => {
-        deleteAll();
+        setTodos([]);
     }, [])
     
     let addNewTask= () =>{
