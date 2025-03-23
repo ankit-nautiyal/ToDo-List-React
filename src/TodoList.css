@@ -1,0 +1,46 @@
+.mainBox{
+    border: 2px solid black;
+    border-radius: 20px;
+    padding: 20px;
+    background-color: rgb(171, 199, 237);
+}
+
+#addBtn{
+    margin: 5px;
+    border: 1px solid black;
+}
+
+.btnsAll button{
+    margin-right: 3px;
+    border: 1px solid black;
+}
+
+.singleTodo button{
+    margin: 3px;
+    font-size: 15px;
+    border: 1px solid black;
+}
+
+li{
+    color: black;
+}
+
+footer{
+    font-weight: 700;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%; /* Full-width footer */
+    background-color: #333; /* Add background to make it visible */
+    color: white;
+    text-align: center;
+    height: 50px;
+}
+
+h1{
+    font-size: 40px;
+}
+
+input{
+    border-radius: 5px;
+}

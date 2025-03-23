@@ -1,14 +1,31 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { v4 as uuidv4 } from 'uuid';
-
+import './TodoList.css';
 
 export default function TodoList() {
-    let [todos, setTodos]= useState([{task: "sample-task", id: uuidv4(), isDone: false }]);
+    let [todos, setTodos]= useState([{task: "", id: uuidv4(), isDone: false }]);
     let [newTodo, setNewTodo]= useState("");
 
+    //to clear default first empty task on page load every time
+    useEffect(() => {
+        deleteAll();
+    }, [])
+    
     let addNewTask= () =>{
+        if (newTodo.trim() === "") { // Check for empty or whitespace-only input
+            alert("Task cannot be empty!");
+            return;
+        }
+
         setTodos([...todos, {task: newTodo, id: uuidv4(), isDone: false }]);
         setNewTodo("");
+    }
+
+    //for better UX, pressing enter key shd add task
+    let handleEnterPress= (e)=>{
+        if(e.key === "Enter"){
+            addNewTask();
+        }
     }
 
     let updateTodoValue= (event) => {
@@ -16,11 +33,18 @@ export default function TodoList() {
     }
 
     let deleteTodo= (id) =>{
-        setTodos((prevTodos) => todos.filter((prevTodos) => prevTodos.id != id));
+        let confirmDelete = confirm("Are you sure you want to delete this task?");
+        if (confirmDelete) {
+            setTodos((prevTodos) => todos.filter((prevTodos) => prevTodos.id != id));
+        }
     }
 
     let deleteAll = () => {
-		setTodos([]); //passing an empty array in current state, hence empty array is returned with no tasks
+        let confirmDeleteAll = confirm("Are you sure you want to delete all tasks?");
+        if (confirmDeleteAll) {
+            setTodos([]); //passing an empty array in current state, hence empty array is returned with no tasks
+        }
+		
     };
             
     let upperCaseAll= () =>{
@@ -58,8 +82,26 @@ export default function TodoList() {
             else{
                 return todo;
             }
-        })
-    );
+        }));
+    }
+
+    let editTask= (id) =>{
+        let currentTask = todos.find((todo) => todo.id === id)?.task || ""; // Get current task text pre-filled, for better UX
+        let newTask = prompt("Edit your task:", currentTask); // Open prompt with pre-filled task
+    
+        // If user enters an empty/whitespace-only string, show alert & do nothing
+        if (newTask.trim() === "") {
+            alert("Task cannot be empty!");
+            return;
+        }
+    
+        setTodos((prevTodos) =>
+            prevTodos.map((todo) =>
+                todo.id === id
+                    ? { ...todo, task: newTask }
+                    : todo
+            )
+        );
     }
 
 
@@ -75,11 +117,12 @@ export default function TodoList() {
 
 
     return(
-        <div>
-            <h1>To-do List App</h1>
-            <input type="text" placeholder="Add a task" onChange={updateTodoValue} value={newTodo} />
+        <>
+        <div className="mainBox">
+            <h1>To-Do List App</h1>
+            <input type="text" placeholder="Add a task" onKeyDown={handleEnterPress} onChange={updateTodoValue} value={newTodo}  />
             <br />
-            <button onClick={addNewTask}>Add Task</button>
+            <button  onClick={addNewTask} id="addBtn">➕ Add Task</button>
             <br /><br />
             <hr />
 
@@ -87,21 +130,36 @@ export default function TodoList() {
             <ul >
                 {todos.map((todo) =>(
                     <li key={todo.id}>
-                        <span style={todo.isDone ? {textDecoration: "line-through"} : {}}> {todo.task} </span> 
+                        <div className="singleTodo">
+                            <span style={todo.isDone ? {textDecoration: "line-through"} : {}}> {todo.task} </span> 
                         
-                        <button onClick={() => upperCaseOne(todo.id)}> Upper-case </button>
-                        <button onClick={() => markAsDoneOne(todo.id)}> Mark As Done </button>
-                        <button onClick={() => deleteTodo(todo.id)}> Delete </button>
+                        
+                            <button onClick={() => editTask(todo.id)}> 📝 Edit   </button>
+                            <button onClick={() => upperCaseOne(todo.id)}>🅰️ Upper-case  </button>
+                            <button onClick={() => markAsDoneOne(todo.id)}>✅ Done  </button>
+                            <button onClick={() => deleteTodo(todo.id)}>❌ Delete </button>
+                        </div>
+                        
                     </li>
                 ))}
             </ul>
             <br /><br />
-            <button onClick={upperCaseAll}>Upper-case All</button>
-            <button onClick={markAsDoneAll}>Mark As Done All</button>
-            <button onClick={deleteAll}>Delete All</button>
-        </div>
+            <div className="btnsAll">
+                <button onClick={upperCaseAll}> 🅰️ Upper-case All </button>
+                <button onClick={markAsDoneAll}>✅ Mark All As Done </button>
+                <button onClick={deleteAll}>❌ Delete All </button>
+            </div>
+            </div>
+            
+            <footer>
+                <p>Made with ❤️ by Ankit Nautiyal</p>
+            </footer>
+        </>
     );
 }
+
+
+
 
 
 
