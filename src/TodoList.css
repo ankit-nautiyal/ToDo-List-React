@@ -23,6 +23,7 @@
 
 li{
     color: black;
+    font-size: 20px;
 }
 
 footer{
@@ -43,4 +44,8 @@ h1{
 
 input{
     border-radius: 5px;
+}
+
+h3{
+    font-size: 20px;
 }
